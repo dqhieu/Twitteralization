@@ -16,15 +16,21 @@ PODS:
     - AFNetworking/NSURLSession
   - BDBOAuth1Manager (2.0.0):
     - AFNetworking/NSURLSession (~> 3.0.0)
+  - PulsingHalo (0.1.0)
+  - SVProgressHUD (2.0.3)
 
 DEPENDENCIES:
   - AFNetworking (= 3.0.0)
   - BDBOAuth1Manager (= 2.0.0)
+  - PulsingHalo
+  - SVProgressHUD
 
 SPEC CHECKSUMS:
   AFNetworking: 932ff751f9d6fb1dad0b3af58b7e3ffba0a4e7fd
   BDBOAuth1Manager: 92d17d06f8a648602962304cd2f35ae7394fa001
+  PulsingHalo: d2684152281a3f7398b9554734b9a4f8feb9129a
+  SVProgressHUD: b0830714205bea1317ea1a2ebc71e5633af334d4
 
-PODFILE CHECKSUM: 38a7110d8aaf30d29b210513b8604f31cd532b0c
+PODFILE CHECKSUM: 114dc7aac2e65de32e5be6c0fb4192bf1c3f18b6
 
 COCOAPODS: 1.0.1
