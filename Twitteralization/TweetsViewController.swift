@@ -68,6 +68,9 @@ class TweetsViewController: UIViewController {
             self.hideLoadingProgress()
         }) { (error: NSError) -> () in
             print("error: \(error.localizedDescription)")
+            self.refreshControl.endRefreshing()
+            self.loadingMoreView?.stopAnimating()
+            self.hideLoadingProgress()
         }
     }
     
