@@ -124,4 +124,17 @@ class TwitterClient: BDBOAuth1SessionManager {
             print(error.localizedDescription)
         }
     }
+    
+    func reply(text: String, id: NSNumber) {
+        var params :[String: AnyObject] = [:]
+        params["status"] = text
+        params["in_reply_to_status_id"] = id
+        
+        POST("1.1/statuses/update.json", parameters: params, progress: nil, success: { (task: NSURLSessionDataTask, response) in
+            
+            print("Reply")
+        }) { (task: NSURLSessionDataTask?, error: NSError) in
+                print(error.localizedDescription)
+        }
+    }
 }

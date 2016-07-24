@@ -22,9 +22,20 @@ class TweetsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
+        initNavigationBar()
         initTableView()
         initScrollView()
         loadData(0)
+    }
+    
+    func initNavigationBar() {
+        self.navigationController?.navigationBar.barTintColor = UIColor(red: 33.0 / 255.0, green: 141.0 / 255.0, blue: 239.0 / 255.0, alpha: 1.0)
+        self.navigationItem.titleView = UIImageView(image: UIImage(named: "twitter_navbar"))
+        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        //self.navigationItem.leftBarButtonItem?.setBackgroundImage(UIImage(named: "logout"), forState: .Normal, barMetrics: .Default)
+        //self.navigationItem.rightBarButtonItem?.setBackgroundImage(UIImage(named: "compose"), forState: .Normal, barMetrics: .Default)
     }
 
     func initTableView() {
@@ -37,19 +48,19 @@ class TweetsViewController: UIViewController {
     
     func loadData(since_id: NSNumber) {
         showLoadingProgress(nil)
-        if !isMoreDataLoading {
-            tweets.removeAll()
-        }
+        
         TwitterClient.sharedInstance.homeTimeLine(since_id, success: { (tweets: [Tweet]) -> () in
-            if self.isMoreDataLoading {
-                if tweets.count > 0 {
+            
+            if tweets.count > 0 {
+                if self.isMoreDataLoading {
                     self.tweets.appendContentsOf(tweets)
                 }
+                else {
+                    self.tweets.removeAll()
+                    self.tweets = tweets
+                }
             }
-            else {
-                self.tweets = tweets
-            }
-            
+                        
             self.isMoreDataLoading = false
             self.tableView.reloadData()
             self.refreshControl.endRefreshing()
@@ -94,6 +105,16 @@ class TweetsViewController: UIViewController {
     
     func hideLoadingProgress() {
         SVProgressHUD.dismiss()
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "segueDetail" {
+            let detailViewController = segue.destinationViewController as! DetailViewController
+            let cell = sender as! TweetCell
+            let indexPath = tableView.indexPathForCell(cell)
+            detailViewController.tweet = tweets[indexPath!.row]
+            detailViewController.delegate = cell
+        }
     }
 
 }

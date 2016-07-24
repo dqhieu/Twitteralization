@@ -84,8 +84,6 @@ class TweetCell: UITableViewCell {
     
     @IBAction func onRetweet(sender: AnyObject) {
         print("retweet")
-        
-        
         if tweet.retweeted {
             TwitterClient.sharedInstance.unRetweet(tweet.id!)
             tweet.retweetCount -= 1
@@ -138,9 +136,56 @@ class TweetCell: UITableViewCell {
     }
 }
 
+extension TweetCell: DetailViewControllerDelegate {
+    func detailViewController(detailViewController: DetailViewController, didLove status: Bool) {
+        tweet.favorited = status
+        if status {
+            TwitterClient.sharedInstance.loveTweet(tweet.id!)
+            //tweet.favoritesCount += 1
+            btnLove.setImage(UIImage(named: "like-action-on"), forState: .Normal)
+            lblLove.textColor = UIColor.redColor()
+        }
+        else {
+            TwitterClient.sharedInstance.unLoveTweet(tweet.id!)
+            //tweet.favoritesCount -= 1
+            btnLove.setImage(UIImage(named: "like-action"), forState: .Normal)
+            lblLove.textColor = UIColor.grayColor()
+        }
+        lblLove.text = String(tweet.favoritesCount)
+    }
+    
+    func detailViewController(detailViewController: DetailViewController, didRetweet status: Bool) {
+        tweet.retweeted = status
+        if status {
+            TwitterClient.sharedInstance.reTweet(tweet.id!)
+            //tweet.retweetCount += 1
+            btnRetweet.setImage(UIImage(named: "retweet-action-on"), forState: .Normal)
+            lblRetweet.textColor = UIColor.greenColor()
+        }
+        else {
+            TwitterClient.sharedInstance.unRetweet(tweet.id!)
+            //tweet.retweetCount -= 1
+            btnRetweet.setImage(UIImage(named: "retweet-action"), forState: .Normal)
+            lblRetweet.textColor = UIColor.grayColor()
+        }
+        lblRetweet.text = String(tweet.retweetCount)
+    }
+}
+
 extension UIImage {
     public func crop169() -> UIImage {
         let crop = CGRectMake(0, 0, self.size.width, self.size.width * 9 / 16)
+        let cgImage = CGImageCreateWithImageInRect(self.CGImage, crop)
+        let image: UIImage = UIImage(CGImage: cgImage!)
+        return image
+    }
+    
+    public func cropSquare() -> UIImage {
+        if self.size.height < self.size.width {
+            return self
+        }
+        
+        let crop = CGRectMake(0, 0, self.size.width, self.size.width)
         let cgImage = CGImageCreateWithImageInRect(self.CGImage, crop)
         let image: UIImage = UIImage(CGImage: cgImage!)
         return image
