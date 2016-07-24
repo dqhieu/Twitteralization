@@ -39,9 +39,17 @@ class TwitterClient: BDBOAuth1SessionManager {
         NSNotificationCenter.defaultCenter().postNotificationName(User.userDidLogoutNotification, object: nil)
     }
     
-    func homeTimeLine(success: ([Tweet]) -> (), failure: (NSError) -> ()) {
+    func homeTimeLine(since_id: NSNumber, success: ([Tweet]) -> (), failure: (NSError) -> ()) {
         
-        GET("1.1/statuses/home_timeline.json", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) in
+        var params :[String: AnyObject] = [:]
+        params["count"] = 10
+        if since_id != 0 {
+            params["since_id"] = since_id
+        }
+        
+        
+        GET("1.1/statuses/home_timeline.json", parameters: params, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) in
+            //print(response)
             let dictionaries = response as! [NSDictionary]
             let tweets = Tweet.tweetsWithArray(dictionaries)
             
@@ -82,5 +90,38 @@ class TwitterClient: BDBOAuth1SessionManager {
             self.loginFailure?(error)
         }
         
+    }
+    
+    func reTweet(id: NSNumber) {
+        
+        POST("1.1/statuses/retweet/\(id).json", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response) in
+            print("Retweeted")
+        }) { (task: NSURLSessionDataTask?, error: NSError) in
+                print(error.localizedDescription)
+        }
+    }
+    
+    func unRetweet(id: NSNumber) {
+        POST("1.1/statuses/unretweet/\(id).json", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response) in
+            print("Unretweeted")
+        }) { (task: NSURLSessionDataTask?, error: NSError) in
+            print(error.localizedDescription)
+        }
+    }
+    
+    func loveTweet(id: NSNumber) {
+        POST("1.1/favorites/create.json", parameters: ["id":id], progress: nil, success: { (task: NSURLSessionDataTask, response) in
+            print("Love tweet")
+        }) { (task: NSURLSessionDataTask?, error: NSError) in
+            print(error.localizedDescription)
+        }
+    }
+    
+    func unLoveTweet(id: NSNumber) {
+        POST("1.1/favorites/destroy.json", parameters: ["id":id], progress: nil, success: { (task: NSURLSessionDataTask, response) in
+            print("Unlove tweet")
+        }) { (task: NSURLSessionDataTask?, error: NSError) in
+            print(error.localizedDescription)
+        }
     }
 }
