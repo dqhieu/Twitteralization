@@ -176,9 +176,12 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController: UITextFieldDelegate {
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        if lblText.text?.characters.count < 140 {
+        let currentText:NSString = lblText.text!
+        let updatedText = currentText.stringByReplacingCharactersInRange(range, withString:string)
+        
+        if updatedText.characters.count < 140 {
             return true
-        }        
+        }
         return false
     }
 }

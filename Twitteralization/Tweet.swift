@@ -26,7 +26,7 @@ class Tweet: NSObject {
     init(dictionary: NSDictionary) {
         self.dictionary = dictionary
         
-        id = dictionary["id"] as? NSNumber
+        id = (dictionary["id"] as? NSNumber) ?? 0
         
         text = dictionary["text"] as? String
         

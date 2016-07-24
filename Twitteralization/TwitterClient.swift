@@ -137,4 +137,18 @@ class TwitterClient: BDBOAuth1SessionManager {
                 print(error.localizedDescription)
         }
     }
+    
+    func postStatus(text: String, success: () -> (), failure: (NSError) -> ()) {
+        var params :[String: AnyObject] = [:]
+        params["status"] = text
+        
+        POST("1.1/statuses/update.json", parameters: params, progress: nil, success: { (task: NSURLSessionDataTask, response) in
+            
+            print("Post status")
+            success()
+        }) { (task: NSURLSessionDataTask?, error: NSError) in
+            print(error.localizedDescription)
+            failure(error)
+        }
+    }
 }

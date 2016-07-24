@@ -115,8 +115,11 @@ class TweetsViewController: UIViewController {
             detailViewController.tweet = tweets[indexPath!.row]
             detailViewController.delegate = cell
         }
+        else if segue.identifier == "segueCompose" {
+            let composeViewController = segue.destinationViewController as! ComposeViewController
+            composeViewController.delegate = self
+        }
     }
-
 }
 
 extension TweetsViewController: UITableViewDataSource, UITableViewDelegate {
@@ -193,5 +196,22 @@ extension TweetsViewController: UIScrollViewDelegate {
                 
             }
         }
+    }
+}
+
+extension TweetsViewController: ComposeViewControllerDelegate {
+    func composeViewController(composeViewController: ComposeViewController, didPostStatus status: String) {
+        var tweetDictionary = [String:AnyObject]()
+        tweetDictionary["text"] = status
+        let date = NSDate()
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
+        let dateStr = formatter.stringFromDate(date)
+        tweetDictionary["created_at"] = dateStr
+        tweetDictionary["user"] = User.currentUser?.dictionary
+        let tweet = Tweet(dictionary: tweetDictionary)
+        tweets.insert(tweet, atIndex: 0)
+        tableView.reloadData()
+        print("AAA")
     }
 }
