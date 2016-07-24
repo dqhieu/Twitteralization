@@ -92,49 +92,58 @@ class TwitterClient: BDBOAuth1SessionManager {
         
     }
     
-    func reTweet(id: NSNumber) {
+    func reTweet(id: NSNumber, success: () -> (), failure: (NSError) -> ()) {
         
         POST("1.1/statuses/retweet/\(id).json", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response) in
             print("Retweeted")
+            success()
         }) { (task: NSURLSessionDataTask?, error: NSError) in
                 print(error.localizedDescription)
+            failure(error)
         }
     }
     
-    func unRetweet(id: NSNumber) {
+    func unRetweet(id: NSNumber, success: () -> (), failure: (NSError) -> ()) {
         POST("1.1/statuses/unretweet/\(id).json", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response) in
             print("Unretweeted")
+            success()
         }) { (task: NSURLSessionDataTask?, error: NSError) in
             print(error.localizedDescription)
+            failure(error)
         }
     }
     
-    func loveTweet(id: NSNumber) {
+    func loveTweet(id: NSNumber, success: () -> (), failure: (NSError) -> ()) {
         POST("1.1/favorites/create.json", parameters: ["id":id], progress: nil, success: { (task: NSURLSessionDataTask, response) in
             print("Love tweet")
+            success()
         }) { (task: NSURLSessionDataTask?, error: NSError) in
             print(error.localizedDescription)
+            failure(error)
         }
     }
     
-    func unLoveTweet(id: NSNumber) {
+    func unLoveTweet(id: NSNumber, success: () -> (), failure: (NSError) -> ()) {
         POST("1.1/favorites/destroy.json", parameters: ["id":id], progress: nil, success: { (task: NSURLSessionDataTask, response) in
             print("Unlove tweet")
+            success()
         }) { (task: NSURLSessionDataTask?, error: NSError) in
             print(error.localizedDescription)
+            failure(error)
         }
     }
     
-    func reply(text: String, id: NSNumber) {
+    func reply(text: String, id: NSNumber, success: () -> (), failure: (NSError) -> ()) {
         var params :[String: AnyObject] = [:]
         params["status"] = text
         params["in_reply_to_status_id"] = id
         
         POST("1.1/statuses/update.json", parameters: params, progress: nil, success: { (task: NSURLSessionDataTask, response) in
-            
+            success()
             print("Reply")
         }) { (task: NSURLSessionDataTask?, error: NSError) in
                 print(error.localizedDescription)
+            failure(error)
         }
     }
     

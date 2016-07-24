@@ -114,6 +114,8 @@ class TweetsViewController: UIViewController {
             let indexPath = tableView.indexPathForCell(cell)
             detailViewController.tweet = tweets[indexPath!.row]
             detailViewController.delegate = cell
+            detailViewController.indexPath = indexPath
+            detailViewController.replyDelegate = self
         }
         else if segue.identifier == "segueCompose" {
             let composeViewController = segue.destinationViewController as! ComposeViewController
@@ -213,5 +215,21 @@ extension TweetsViewController: ComposeViewControllerDelegate {
         tweets.insert(tweet, atIndex: 0)
         tableView.reloadData()
         print("AAA")
+    }
+}
+
+extension TweetsViewController: DetailViewControllerReplyDelegate {
+    func detailViewController(detailViewController: DetailViewController, didReply text: String, atIndexPath indexPath: NSIndexPath) {
+        var tweetDictionary = [String:AnyObject]()
+        tweetDictionary["text"] = text
+        let date = NSDate()
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
+        let dateStr = formatter.stringFromDate(date)
+        tweetDictionary["created_at"] = dateStr
+        tweetDictionary["user"] = User.currentUser?.dictionary
+        let tweet = Tweet(dictionary: tweetDictionary)
+        tweets.insert(tweet, atIndex: indexPath.row + 1)
+        tableView.reloadData()
     }
 }

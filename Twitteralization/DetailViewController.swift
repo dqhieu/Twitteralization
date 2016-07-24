@@ -13,6 +13,10 @@ import UIKit
     optional func detailViewController(detailViewController: DetailViewController, didLove status: Bool)
 }
 
+@objc protocol DetailViewControllerReplyDelegate {
+    optional func detailViewController(detailViewController: DetailViewController, didReply text: String, atIndexPath indexPath: NSIndexPath)
+}
+
 class DetailViewController: UIViewController {
 
     @IBOutlet weak var imgViewAvatar: UIImageView!
@@ -32,8 +36,10 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var lblCharCount: UILabel!
     @IBOutlet weak var lblText: UITextField!
     weak var delegate: DetailViewControllerDelegate?
+    weak var replyDelegate: DetailViewControllerReplyDelegate?
     
     var tweet:Tweet!
+    var indexPath: NSIndexPath!
     
     @IBOutlet weak var keyBoardHeightConstraint: NSLayoutConstraint!
     override func viewDidLoad() {
@@ -135,8 +141,14 @@ class DetailViewController: UIViewController {
     }
     
     @IBAction func onReply(sender: AnyObject) {
-        TwitterClient.sharedInstance.reply(lblText.text!, id: tweet.id!)
-        self.navigationController?.popViewControllerAnimated(true)
+        TwitterClient.sharedInstance.reply(lblText.text!, id: tweet.id!, success: {
+            // dosomething here
+            self.navigationController?.popViewControllerAnimated(true)
+            self.replyDelegate?.detailViewController!(self, didReply: self.lblText.text!, atIndexPath: self.indexPath)
+        }) { (error: NSError) in
+                print(error.localizedDescription)
+        }
+        
     }
     
     func reTweet() {

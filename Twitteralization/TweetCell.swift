@@ -85,30 +85,49 @@ class TweetCell: UITableViewCell {
     @IBAction func onRetweet(sender: AnyObject) {
         print("retweet")
         if tweet.retweeted {
-            TwitterClient.sharedInstance.unRetweet(tweet.id!)
-            tweet.retweetCount -= 1
+            TwitterClient.sharedInstance.unRetweet(tweet.id!, success: {
+                self.tweet.retweeted = !self.tweet.retweeted
+                self.tweet.retweetCount -= 1
+                self.reTweet()
+                }, failure: { (error: NSError) in
+                    print(error.localizedDescription)
+            })
         }
         else {
-            TwitterClient.sharedInstance.reTweet(tweet.id!)
-            tweet.retweetCount += 1
+            TwitterClient.sharedInstance.reTweet(tweet.id!, success: {
+                self.tweet.retweeted = !self.tweet.retweeted
+                self.tweet.retweetCount += 1
+                self.reTweet()
+                }, failure: { (error: NSError) in
+                    print(error.localizedDescription)
+            })
         }
-        tweet.retweeted = !tweet.retweeted
-        reTweet()
+        
     }
     
     @IBAction func onLove(sender: AnyObject) {
         print("love")
         
         if tweet.favorited {
-            TwitterClient.sharedInstance.unLoveTweet(tweet.id!)
-            tweet.favoritesCount -= 1
+            TwitterClient.sharedInstance.unLoveTweet(tweet.id!, success: { 
+                self.tweet.favoritesCount -= 1
+                self.tweet.favorited = !self.tweet.favorited
+                self.favorite()
+                }, failure: { (error:NSError) in
+                    print(error.localizedDescription)
+            })
+            
         }
         else {
-            TwitterClient.sharedInstance.loveTweet(tweet.id!)
-            tweet.favoritesCount += 1
+            TwitterClient.sharedInstance.loveTweet(tweet.id!, success: { 
+                self.tweet.favoritesCount += 1
+                self.tweet.favorited = !self.tweet.favorited
+                self.favorite()
+                }, failure: { (error:NSError) in
+                    print(error.localizedDescription)
+            })
         }
-        tweet.favorited = !tweet.favorited
-        favorite()
+        
     }
     
     func reTweet() {
@@ -140,16 +159,20 @@ extension TweetCell: DetailViewControllerDelegate {
     func detailViewController(detailViewController: DetailViewController, didLove status: Bool) {
         tweet.favorited = status
         if status {
-            TwitterClient.sharedInstance.loveTweet(tweet.id!)
-            //tweet.favoritesCount += 1
-            btnLove.setImage(UIImage(named: "like-action-on"), forState: .Normal)
-            lblLove.textColor = UIColor.redColor()
+            TwitterClient.sharedInstance.loveTweet(tweet.id!, success: {
+                self.btnLove.setImage(UIImage(named: "like-action-on"), forState: .Normal)
+                self.lblLove.textColor = UIColor.redColor()
+                }, failure: { (error:NSError) in
+                    print(error.localizedDescription)
+            })
         }
         else {
-            TwitterClient.sharedInstance.unLoveTweet(tweet.id!)
-            //tweet.favoritesCount -= 1
-            btnLove.setImage(UIImage(named: "like-action"), forState: .Normal)
-            lblLove.textColor = UIColor.grayColor()
+            TwitterClient.sharedInstance.unLoveTweet(tweet.id!, success: {
+                self.btnLove.setImage(UIImage(named: "like-action"), forState: .Normal)
+                self.lblLove.textColor = UIColor.grayColor()
+                }, failure: { (error:NSError) in
+                    print(error.localizedDescription)
+            })
         }
         lblLove.text = String(tweet.favoritesCount)
     }
@@ -157,16 +180,22 @@ extension TweetCell: DetailViewControllerDelegate {
     func detailViewController(detailViewController: DetailViewController, didRetweet status: Bool) {
         tweet.retweeted = status
         if status {
-            TwitterClient.sharedInstance.reTweet(tweet.id!)
-            //tweet.retweetCount += 1
-            btnRetweet.setImage(UIImage(named: "retweet-action-on"), forState: .Normal)
-            lblRetweet.textColor = UIColor.greenColor()
+            TwitterClient.sharedInstance.reTweet(tweet.id!, success: {
+                self.btnRetweet.setImage(UIImage(named: "retweet-action-on"), forState: .Normal)
+                self.lblRetweet.textColor = UIColor.greenColor()
+                }, failure: { (error:NSError) in
+                    print(error.localizedDescription)
+            })
+            
         }
         else {
-            TwitterClient.sharedInstance.unRetweet(tweet.id!)
-            //tweet.retweetCount -= 1
-            btnRetweet.setImage(UIImage(named: "retweet-action"), forState: .Normal)
-            lblRetweet.textColor = UIColor.grayColor()
+            TwitterClient.sharedInstance.unRetweet(tweet.id!, success: {
+                self.btnRetweet.setImage(UIImage(named: "retweet-action"), forState: .Normal)
+                self.lblRetweet.textColor = UIColor.grayColor()
+                }, failure: { (error:NSError) in
+                    print(error.localizedDescription)
+            })
+            
         }
         lblRetweet.text = String(tweet.retweetCount)
     }
