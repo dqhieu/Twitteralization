@@ -77,6 +77,15 @@ class TweetCell: UITableViewCell {
         }
     }
     
+    override func awakeFromNib() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(TweetCell.onTapUserAvatar))
+        imgViewUserAvatar.userInteractionEnabled = true
+        imgViewUserAvatar.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    func onTapUserAvatar() {
+        print(tweet.user?.name)
+    }
     
     @IBAction func onReply(sender: UIButton) {
         print("reply")

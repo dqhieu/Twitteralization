@@ -30,6 +30,10 @@ class TweetsViewController: UIViewController {
         loadData(0)
     }
     
+    
+    
+    
+    
     func initNavigationBar() {
         self.navigationController?.navigationBar.barTintColor = UIColor(red: 33.0 / 255.0, green: 141.0 / 255.0, blue: 239.0 / 255.0, alpha: 1.0)
         self.navigationItem.titleView = UIImageView(image: UIImage(named: "twitter_navbar"))

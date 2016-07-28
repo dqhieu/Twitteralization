@@ -181,8 +181,9 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="281.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="slc-qj-SNs">
+                                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="slc-qj-SNs">
                                                     <rect key="frame" x="8" y="8" width="50" height="50"/>
+                                                    <gestureRecognizers/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="50" id="D6F-Oc-eQ6"/>
                                                         <constraint firstAttribute="width" constant="50" id="Gtd-ad-csn"/>
@@ -341,6 +342,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hg8-Q3-7Z3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="pZu-5N-7uv"/>
             </objects>
             <point key="canvasLocation" x="1075" y="235"/>
         </scene>
