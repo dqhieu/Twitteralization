@@ -17,11 +17,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
+        /*
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let hamburgerViewController = window!.rootViewController as! HamburgerViewController
+        let menuViewController = storyboard.instantiateViewControllerWithIdentifier("MenuViewController")
+        hamburgerViewController.menuViewController = menuViewController
+        */
+        
+        
         if User.currentUser != nil {
             print("There is a current user")
+            
+            
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let nvc = storyboard.instantiateViewControllerWithIdentifier("TweetsNavigationController")
-            window?.rootViewController = nvc
+            let hamburgerViewController = storyboard.instantiateViewControllerWithIdentifier("HamburgerViewController") as! HamburgerViewController
+            let menuViewController = storyboard.instantiateViewControllerWithIdentifier("MenuViewController") as! MenuTableViewController
+            
+            menuViewController.hamburgerViewController = hamburgerViewController
+            hamburgerViewController.menuViewController = menuViewController
+            
+            
+            window!.rootViewController = hamburgerViewController
+            
         }
         else {
             print("There is no current user")

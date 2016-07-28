@@ -22,8 +22,6 @@ class TweetsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        
         initNavigationBar()
         initTableView()
         initScrollView()

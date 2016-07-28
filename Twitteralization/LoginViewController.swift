@@ -43,6 +43,8 @@ class LoginViewController: UIViewController {
     }
 
     func showLoadingProgress(text: String?) {
+        SVProgressHUD.setDefaultStyle(.Custom)
+        SVProgressHUD.setBackgroundColor(UIColor.clearColor())
         if let text = text {
             SVProgressHUD.showWithStatus(text)
         }
@@ -56,5 +58,14 @@ class LoginViewController: UIViewController {
         SVProgressHUD.dismiss()
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "segueLogin" {
+            let hamburgerViewController = segue.destinationViewController as! HamburgerViewController
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let menuViewController = storyboard.instantiateViewControllerWithIdentifier("MenuViewController") as! MenuTableViewController
+            menuViewController.hamburgerViewController = hamburgerViewController
+            hamburgerViewController.menuViewController = menuViewController
+        }
+    }
 }
 

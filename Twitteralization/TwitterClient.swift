@@ -81,6 +81,7 @@ class TwitterClient: BDBOAuth1SessionManager {
             
             self.currentAccount({ (user: User) -> () in
                 User.currentUser = user
+                print("SavecurrentUser")
                 self.loginSeccuess?()
                 }, failure: { (error: NSError) -> () in
                     self.loginFailure?(error)
