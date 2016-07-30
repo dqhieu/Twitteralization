@@ -66,13 +66,13 @@ class DetailViewController: UIViewController {
         
         if let photoUrl = tweet.imageUrl {
             
-            imgConstraintHeight.constant = self.imgViewPhoto.frame.width
+            imgConstraintHeight.constant = self.imgViewPhoto.frame.width * 9 / 16
             
             let request = NSURLRequest(URL: photoUrl)
             
             imgViewPhoto.setImageWithURLRequest(request, placeholderImage: nil, success: { (requets: NSURLRequest, response: NSHTTPURLResponse?, image: UIImage) in
                 let scale = image.size.width / self.imgViewPhoto.frame.width
-                self.imgViewPhoto.image = image.resize(CGSize(width: self.imgViewPhoto.frame.width, height: self.imgConstraintHeight.constant * scale)).cropSquare()
+                self.imgViewPhoto.image = image.resize(CGSize(width: self.imgViewPhoto.frame.width, height: self.imgConstraintHeight.constant * scale)).crop169()
                 
                 }, failure: nil)
             self.imgViewPhoto.layer.cornerRadius = 4

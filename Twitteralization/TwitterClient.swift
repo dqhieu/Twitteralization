@@ -62,6 +62,49 @@ class TwitterClient: BDBOAuth1SessionManager {
         
     }
     
+    func userTimeline(since_id: NSNumber, userID:NSNumber, screenname: String, success: ([Tweet]) -> (), failure: (NSError) -> ()) {
+        var params :[String: AnyObject] = [:]
+        params["user_id"] = userID
+        params["screen_name"] = screenname
+        params["count"] = 20
+        if since_id != 0 {
+            params["since_id"] = since_id
+        }
+        
+        
+        GET("1.1/statuses/user_timeline.json", parameters: params, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) in
+            //print(response)
+            let dictionaries = response as! [NSDictionary]
+            let tweets = Tweet.tweetsWithArray(dictionaries)
+            
+            success(tweets)
+            
+            
+            }, failure: { (task: NSURLSessionDataTask?, error: NSError) in
+                failure(error)
+        })
+    }
+    
+    
+    func userShow(userID:NSNumber, screenname: String, success: (User) -> (), failure: (NSError) -> ()) {
+        var params :[String: AnyObject] = [:]
+        params["user_id"] = userID
+        params["screen_name"] = screenname
+        
+        
+        GET("1.1/users/show.json", parameters: params, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) in
+            //print(response)
+            let dictionary = response as! NSDictionary
+            let user = User(dictionary: dictionary)
+            
+            success(user)
+            
+            
+            }, failure: { (task: NSURLSessionDataTask?, error: NSError) in
+                failure(error)
+        })
+    }
+    
     func currentAccount(success: (User) -> (), failure: (NSError) -> ()) {
         GET("1.1/account/verify_credentials.json", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) in
             let userDictionary = response as! NSDictionary

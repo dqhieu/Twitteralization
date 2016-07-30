@@ -126,6 +126,17 @@ class TweetsViewController: UIViewController {
             let composeViewController = segue.destinationViewController as! ComposeViewController
             composeViewController.delegate = self
         }
+        else if segue.identifier == "segueProfile" {
+            //let cell = sender as! TweetCell
+            //let indexPath = tableView.indexPathForCell(cell)
+            let profileViewController = segue.destinationViewController as! ProfileViewController
+            //let tweet = tweets[(indexPath?.row)!] as Tweet
+            //let user = tweet.user
+            let user = sender as! User
+            profileViewController.user = user
+            
+            
+        }
     }
 }
 
@@ -141,6 +152,7 @@ extension TweetsViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("TweetCell") as! TweetCell
         cell.tweet = tweets[indexPath.row]
+        cell.delegate = self
         return cell
     }
     
@@ -236,5 +248,11 @@ extension TweetsViewController: DetailViewControllerReplyDelegate {
         let tweet = Tweet(dictionary: tweetDictionary)
         tweets.insert(tweet, atIndex: indexPath.row + 1)
         tableView.reloadData()
+    }
+}
+
+extension TweetsViewController: TweetCellDelegate {
+    func tweetCell(tweetCell: TweetCell, didSelectUser user: User) {
+        performSegueWithIdentifier("segueProfile", sender: user)
     }
 }

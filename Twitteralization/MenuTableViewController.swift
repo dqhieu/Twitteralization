@@ -13,12 +13,15 @@ class MenuTableViewController: UITableViewController {
     var hamburgerViewController: HamburgerViewController!
     
     var tweetsNavigationController: UINavigationController!
+    var profileViewController: ProfileViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         tweetsNavigationController = storyboard.instantiateViewControllerWithIdentifier("TweetsNavigationController") as! UINavigationController
         hamburgerViewController.contentViewController = tweetsNavigationController
+        profileViewController = storyboard.instantiateViewControllerWithIdentifier("ProfileViewController") as! ProfileViewController
+        profileViewController.user = User.currentUser
     }
 
     override func didReceiveMemoryWarning() {
@@ -29,6 +32,9 @@ class MenuTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         if indexPath.row == 0 {
+            hamburgerViewController.contentViewController = profileViewController
+        }
+        else if indexPath.row == 1 {
             hamburgerViewController.contentViewController = tweetsNavigationController
         }
     }

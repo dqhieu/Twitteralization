@@ -26,6 +26,8 @@ class TweetCell: UITableViewCell {
     @IBOutlet weak var btnLove: UIButton!
     @IBOutlet weak var lblLove: UILabel!
     
+    weak var delegate:TweetCellDelegate?
+    
     var tweet: Tweet! {
         didSet {
             if let user = tweet.user {
@@ -84,7 +86,7 @@ class TweetCell: UITableViewCell {
     }
     
     func onTapUserAvatar() {
-        print(tweet.user?.name)
+        delegate?.tweetCell(self, didSelectUser: tweet.user!)
     }
     
     @IBAction func onReply(sender: UIButton) {
@@ -210,6 +212,10 @@ extension TweetCell: DetailViewControllerDelegate {
     }
 }
 
+protocol TweetCellDelegate: class {
+    func tweetCell(tweetCell: TweetCell, didSelectUser user:User)
+}
+
 extension UIImage {
     public func crop169() -> UIImage {
         let crop = CGRectMake(0, 0, self.size.width, self.size.width * 9 / 16)
@@ -243,3 +249,4 @@ extension UIImage {
         return newImage
     }
 }
+
