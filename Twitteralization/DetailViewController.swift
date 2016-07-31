@@ -143,7 +143,12 @@ class DetailViewController: UIViewController {
     @IBAction func onReply(sender: AnyObject) {
         TwitterClient.sharedInstance.reply(lblText.text!, id: tweet.id!, success: {
             // dosomething here
-            self.navigationController?.popViewControllerAnimated(true)
+            if self.navigationController != nil {
+                self.navigationController!.popViewControllerAnimated(true)
+            }
+            else {
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
             self.replyDelegate?.detailViewController!(self, didReply: self.lblText.text!, atIndexPath: self.indexPath)
         }) { (error: NSError) in
                 print(error.localizedDescription)

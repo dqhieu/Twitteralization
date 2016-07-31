@@ -8,6 +8,7 @@
 
 import UIKit
 import AFNetworking
+import SVProgressHUD
 
 class ProfileViewController: UIViewController {
 
@@ -18,6 +19,12 @@ class ProfileViewController: UIViewController {
     var screenname:String!
     
     var userID:NSNumber!
+    
+    var isMoreDataLoading = false
+    var loadingMoreView:InfiniteScrollActivityView?
+    let refreshControl = UIRefreshControl()
+    
+    weak var delegate: ProfileViewControllerDelegate?
     
     var user:User! {
         didSet {
@@ -30,8 +37,10 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
 
         initTableView()
+        initScrollView()
         loadUser()
     }
+    
     
     func initTableView() {
         tableView.delegate = self
@@ -40,20 +49,64 @@ class ProfileViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.sizeToFit()
     }
+    
+    func initScrollView() {
+        refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        tableView.insertSubview(refreshControl, atIndex: 0)
+        
+        let frame = CGRectMake(0, tableView.contentSize.height, tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight)
+        loadingMoreView = InfiniteScrollActivityView(frame: frame)
+        loadingMoreView!.hidden = true
+        tableView.addSubview(loadingMoreView!)
+        
+        var insets = tableView.contentInset;
+        insets.bottom += InfiniteScrollActivityView.defaultHeight;
+        tableView.contentInset = insets
+    }
+    
+    func refreshControlAction(refreshControl: UIRefreshControl) {
+        loadData(0)
+    }
 
     func loadUser() {
+        showLoadingProgress(nil)
         TwitterClient.sharedInstance.userShow(userID, screenname: screenname, success: { (user: User) in
             self.user = user
             self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-            TwitterClient.sharedInstance.userTimeline(0, userID: self.userID, screenname: self.screenname, success: { (tweets: [Tweet]) in
-                self.tweets = tweets
-                self.tableView.reloadData()
-                }, failure: { (error: NSError) in
-                    print(error.localizedDescription)
-            })
+            self.loadData(0)
         }) { (error: NSError) in
                 print(error.localizedDescription)
         }
+    }
+    
+    func loadData(since_id: NSNumber) {
+        showLoadingProgress(nil)
+        
+        
+        TwitterClient.sharedInstance.userTimeline(since_id, userID: self.userID, screenname: self.screenname, success: { (tweets: [Tweet]) in
+            if tweets.count > 0 {
+                if self.isMoreDataLoading {
+                    if tweets[0].createdAt?.compare((self.tweets.last?.createdAt)!) == NSComparisonResult.OrderedAscending {
+                        self.tweets.appendContentsOf(tweets)
+                    }
+                }
+                else {
+                    self.tweets.removeAll()
+                    self.tweets = tweets
+                }
+            }
+            
+            self.isMoreDataLoading = false
+            self.tableView.reloadData()
+            self.refreshControl.endRefreshing()
+            self.loadingMoreView?.stopAnimating()
+            self.hideLoadingProgress()
+            }, failure: { (error: NSError) in
+                self.refreshControl.endRefreshing()
+                self.loadingMoreView?.stopAnimating()
+                self.hideLoadingProgress()
+                print(error.localizedDescription)
+        })
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -68,6 +121,19 @@ class ProfileViewController: UIViewController {
         }
     }
     
+    func showLoadingProgress(text: String?) {
+        if let text = text {
+            SVProgressHUD.showWithStatus(text)
+        }
+        else {
+            SVProgressHUD.show()
+        }
+        
+    }
+    
+    func hideLoadingProgress() {
+        SVProgressHUD.dismiss()
+    }
 }
 
 extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
@@ -89,6 +155,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCellWithIdentifier("HeaderCell") as! HeaderCell
             cell.user = user
+            delegate = cell
             return cell
         }
         else if indexPath.section == 1 {
@@ -104,4 +171,32 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
+}
+
+extension ProfileViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        delegate?.profileViewController(self, didScroll: tableView.contentOffset.y)
+        if (!isMoreDataLoading) {
+            // Calculate the position of one screen length before the bottom of the results
+            let scrollViewContentHeight = tableView.contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+            
+            // When the user has scrolled past the threshold, start requesting
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.dragging) {
+                isMoreDataLoading = true
+                
+                // Update position of loadingMoreView, and start loading indicator
+                let frame = CGRectMake(0, tableView.contentSize.height, tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight)
+                loadingMoreView?.frame = frame
+                loadingMoreView!.startAnimating()
+                // Code to load more results
+                loadData((tweets.last?.id)!)
+                
+            }
+        }
+    }
+}
+
+protocol ProfileViewControllerDelegate: class {
+    func profileViewController(profileViewController: ProfileViewController, didScroll y: CGFloat)
 }

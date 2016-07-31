@@ -49,6 +49,14 @@ class HamburgerViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        initNavigationBar()
+    }
+    
+    func initNavigationBar() {
+        self.navigationController?.navigationBar.barTintColor = UIColor(red: 33.0 / 255.0, green: 141.0 / 255.0, blue: 239.0 / 255.0, alpha: 1.0)
+        self.navigationItem.titleView = UIImageView(image: UIImage(named: "twitter_navbar"))
+        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        
     }
     
     @IBAction func onPanGesture(sender: UIPanGestureRecognizer) {

@@ -22,12 +22,15 @@ class HeaderCell: UITableViewCell {
     
     @IBOutlet weak var coverHeight: NSLayoutConstraint!
     
+    var originCoverTransform:CGAffineTransform!
+    
     var user: User! {
         didSet {
             if let coverUrl =  user.bannerUrl  {
                 imgViewCover.setImageWithURL(coverUrl)
                 imgViewCover.layer.cornerRadius = 4
                 coverHeight.constant = imgViewCover.frame.width / 3
+                originCoverTransform = imgViewCover.transform
             }
             
             if let imageUrl = user.profileUrl {
@@ -64,4 +67,22 @@ class HeaderCell: UITableViewCell {
     }
 
     
+}
+
+extension HeaderCell: ProfileViewControllerDelegate {
+    
+    func profileViewController(profileViewController: ProfileViewController, didScroll y: CGFloat) {
+        print(y)
+        imgViewCover.transform = CGAffineTransformMakeScale(1.0 - y / 100, 1.0 - y / 100)
+        if y < 0 { //table view is moving down
+            
+            
+        }
+        else if y > 0 { // table view is moving up
+            
+        }
+        else if y == 0 {
+            
+        }
+    }
 }

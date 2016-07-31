@@ -94,10 +94,6 @@ class TweetsViewController: UIViewController {
         loadData(0)
     }
     
-    @IBAction func onLogout(sender: AnyObject) {
-        TwitterClient.sharedInstance.logout()
-    }
-    
     func showLoadingProgress(text: String?) {
         if let text = text {
             SVProgressHUD.showWithStatus(text)
@@ -209,7 +205,6 @@ extension TweetsViewController: UIScrollViewDelegate {
                 let frame = CGRectMake(0, tableView.contentSize.height, tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight)
                 loadingMoreView?.frame = frame
                 loadingMoreView!.startAnimating()
-                print((tweets.last?.id)!)
                 // Code to load more results
                 loadData((tweets.last?.id)!)
                 

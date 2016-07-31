@@ -37,6 +37,9 @@ class MenuTableViewController: UITableViewController {
         else if indexPath.row == 1 {
             hamburgerViewController.contentViewController = tweetsNavigationController
         }
+        else if indexPath.row == 2 {
+            TwitterClient.sharedInstance.logout()
+        }
     }
 
     // MARK: - Table view data source
