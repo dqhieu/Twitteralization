@@ -1,6 +1,6 @@
-# Project 4 - *Name of App Here*
+# Project 4 - Twitteralization
 
-Time spent: **X** hours spent in total
+Time spent: **6** hours spent in total
 
 ## User Stories
 
@@ -32,6 +32,7 @@ The following **optional** features are implemented:
 
 ## Video Walkthrough
 
+![Video Walkthrough](Twitteralization_walkthrough2_8fps.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 

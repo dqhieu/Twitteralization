@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AFNetworking
 
 class MenuTableViewController: UITableViewController {
 
@@ -15,8 +16,22 @@ class MenuTableViewController: UITableViewController {
     var tweetsNavigationController: UINavigationController!
     var profileViewController: ProfileViewController!
     
+    
+    @IBOutlet weak var imgViewAvatar: UIImageView!
+    @IBOutlet weak var lblName: UILabel!
+    @IBOutlet weak var lblScreenName: UILabel!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let user = User.currentUser
+        
+        imgViewAvatar.setImageWithURL((user?.profileUrl)!)
+        lblName.text = user?.name as! String
+        lblScreenName.text = "@\((user?.screenname)!)"
+        
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         tweetsNavigationController = storyboard.instantiateViewControllerWithIdentifier("TweetsNavigationController") as! UINavigationController
         hamburgerViewController.contentViewController = tweetsNavigationController
